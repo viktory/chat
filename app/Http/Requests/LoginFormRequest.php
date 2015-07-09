@@ -4,9 +4,9 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class RegistrationFormRequest extends Request
+class LoginFormRequest extends Request
 {
-    protected $errorBag = 'registration';
+    protected $errorBag = 'login';
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,9 +25,14 @@ class RegistrationFormRequest extends Request
     public function rules()
     {
         return [
-            'username' => 'required|unique:users,username|max:255',
-            'email' => 'required|email|unique:users,email|max:255',
-            'password' => 'required|alphaNum|min:3',
+            'username' => 'required_without:email',
+            'email' => 'required_without:username',
+            'password' => 'required',
         ];
+    }
+
+    public function getErrorBag()
+    {
+        return $this->errorBag;
     }
 }

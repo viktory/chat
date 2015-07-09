@@ -6,40 +6,62 @@
     <body>
         <div class="container">
             <div class="content">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                <div>
+                    <ul>
+                        @foreach($errors->registration->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
 
-                {!! Form::open(array('route' => 'registration', 'class' => 'form')) !!}
+                    {!! Form::open(['route' => 'registration', 'class' => 'form']) !!}
+                        <div class="form-group">
+                            {!! Form::label('Your Name') !!}
+                            {!! Form::text('username', null, ['required', 'class'=>'form-control']) !!}
+                        </div>
 
-                <div class="form-group">
-                    {!! Form::label('Your Name') !!}
-                    {!! Form::text('username', null,
-                    array('required',
-                    'class'=>'form-control')) !!}
+                        <div class="form-group">
+                            {!! Form::label('Your E-mail Address') !!}
+                            {!! Form::text('email', null, ['required', 'class'=>'form-control']) !!}
+                        </div>
+
+                        <div class="form-group">
+                            {!! Form::label('Your Password') !!}
+                            {!! Form::password('password', null, ['required', 'class'=>'form-control']) !!}
+                        </div>
+
+                        <div class="form-group">
+                            {!! Form::submit('Sign up', ['class'=>'btn btn-primary']) !!}
+                        </div>
+                    {!! Form::close() !!}
                 </div>
+                <div>
+                    <ul>
+                        @foreach($errors->login->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
 
-                <div class="form-group">
-                    {!! Form::label('Your E-mail Address') !!}
-                    {!! Form::text('email', null,
-                    array('required',
-                    'class'=>'form-control')) !!}
-                </div>
+                    {!! Form::open(['route' => 'login', 'class' => 'form']) !!}
+                        <div class="form-group">
+                            {!! Form::label('Your Name') !!}
+                            {!! Form::text('username', null, ['class'=>'form-control']) !!}
+                        </div>
 
-                <div class="form-group">
-                    {!! Form::label('Your Password') !!}
-                    {!! Form::password('password', null,
-                    array('required',
-                    'class'=>'form-control')) !!}
-                </div>
+                        <div class="form-group">
+                            {!! Form::label('Your E-mail Address') !!}
+                            {!! Form::text('email', null, ['class'=>'form-control']) !!}
+                        </div>
 
-                <div class="form-group">
-                    {!! Form::submit('Sign up',
-                    array('class'=>'btn btn-primary')) !!}
+                        <div class="form-group">
+                            {!! Form::label('Your Password') !!}
+                            {!! Form::password('password', null, ['required', 'class'=>'form-control']) !!}
+                        </div>
+
+                        <div class="form-group">
+                            {!! Form::submit('Sign up', ['class'=>'btn btn-primary']) !!}
+                        </div>
+                    {!! Form::close() !!}
                 </div>
-                {!! Form::close() !!}
             </div>
         </div>
     </body>
