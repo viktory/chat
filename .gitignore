@@ -5,3 +5,7 @@ Homestead.yaml
 /log
 .idea
 composer.lock
+/public/build/*
+/public/js/*
+/public/css/*
+/public/fonts/*
