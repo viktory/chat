@@ -21,7 +21,16 @@
             <a class="navbar-brand" href="{{\Illuminate\Support\Facades\URL::to('/')}}">Chat</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-
+            @if (array_key_exists('username', View::getSections()))
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@yield('username') <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{route('logout')}}">Log out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            @endif
         </div>
     </div>
 </nav>
