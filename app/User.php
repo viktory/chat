@@ -32,4 +32,20 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $hidden = ['password'];
+
+    /**
+     * @param $query
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function scopeExceptUser($query, $id)
+    {
+        return $query->where('id', '<>', $id);
+    }
+
+    public function scopeExceptAdmins($query)
+    {
+        return $query->where('is_admin', false);
+    }
 }

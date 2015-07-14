@@ -42,6 +42,7 @@
 </div>
 
 <script src="{{ elixir('js/app.js') }}"></script>
+@yield('chat_script')
 </body>
 </html>
 

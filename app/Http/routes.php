@@ -18,7 +18,10 @@ Route::post('registration',
     ['as' => 'registration', 'uses' => 'UsersController@registration']);
 Route::post('login',
     ['as' => 'login', 'uses' => 'UsersController@login']);
-Route::get('chat',
-    ['as' => 'chat', 'uses' => 'ChatsController@index']);
 Route::get('logout',
     ['as' => 'logout', 'uses' => 'UsersController@logout']);
+Route::get('chat',
+    ['as' => 'chat', 'uses' => 'ChatsController@index']);
+Route::get('load_history/{id}',
+    ['as' => 'load_history', 'uses' => 'ChatsController@loadHistory'])
+    ->where('id', '[0-9]+');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Message;
 use App\User;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
@@ -27,7 +28,17 @@ class ChatsController extends Controller
 
     public function index()
     {
-        $user = $this->auth->user();
-        return view('chat', ['username' => $user->username]);
+        $currentUser = $this->auth->user();
+        $users = User::exceptUser($currentUser->id)->get();
+
+        return view('chat.index', ['currentUser' => $currentUser, 'users' => $users]);
+    }
+
+    public function loadHistory($id)
+    {
+        $currentUser = $this->auth->user();
+        $messages = Message::byUsers($id, $currentUser->id)
+            ->get();
+        return view('chat._message', ['messages' => $messages]);
     }
 }

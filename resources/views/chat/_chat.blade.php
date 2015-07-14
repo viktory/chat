@@ -1,0 +1,1 @@
+<div id="chatMessages">Please, select the receiver first</div>

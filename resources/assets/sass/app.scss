@@ -5,10 +5,63 @@ body {
 
   .starter-template {
     padding-top: 40px;
+    color: #555555;
 
     .bg-danger {
       padding: 10px;
       border-radius: 5px;
+    }
+
+    .chat-block {
+      border: 1px solid #ddd;
+      min-height: 500px;
+      border-radius: 4px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+
+      #chatMessages {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        padding: 10px 15px;
+        right: -15px;
+        overflow: auto;
+        width: 100%;
+
+        .message-block {
+          margin-bottom: 10px;
+          padding: 10px;
+          border-radius: 5px;
+          background: #f8f8ff;
+
+
+          .header div {
+            display: inline-block;
+          }
+
+          .date {
+            float: right;
+          }
+        }
+      }
+    }
+
+    .form-block {
+      .btn-primary {
+        float: right;
+      }
+    }
+
+    .user-block {
+      .counter {
+        background-color: #337ab7;
+        border-radius: 10px;
+        color: #fff;
+        float: right;
+        padding: 0 5px;
+      }
     }
   }
 }
