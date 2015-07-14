@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dialog;
 use App\Message;
 use App\User;
 use Illuminate\Auth\Guard;
@@ -29,16 +30,27 @@ class ChatsController extends Controller
     public function index()
     {
         $currentUser = $this->auth->user();
-        $users = User::exceptUser($currentUser->id)->get();
+        $users = User::exceptUser($currentUser->id)->exceptAdmins()->orderBy('username', 'asc')->get();
 
         return view('chat.index', ['currentUser' => $currentUser, 'users' => $users]);
+    }
+
+    public function admin()
+    {
+        $currentUser = $this->auth->user();
+//        $users = User::exceptUser($currentUser->id)->exceptAdmins()->get();
+
+//        return view('chat.admin', ['currentUser' => $currentUser, 'users' => $users]);
     }
 
     public function loadHistory($id)
     {
         $currentUser = $this->auth->user();
-        $messages = Message::byUsers($id, $currentUser->id)
-            ->get();
+        if (($dialog = Dialog::byUsers($id, $currentUser->id)->first()) === null) {
+            $messages = [];
+        } else {
+            $messages = Message::byDialog($dialog->id)->orderBy('created_at', 'asc')->get();
+        }
         return view('chat._message', ['messages' => $messages]);
     }
 }

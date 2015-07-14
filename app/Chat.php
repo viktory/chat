@@ -51,20 +51,28 @@ class Chat implements MessageComponentInterface
         echo sprintf('User %d sending message "%s" to user %d' . "\n"
             , $from->userId, $msg->message, $msg->userTo);
 
-        $message = new Message();
-        $message->from = $from->userId;
-        $message->to = $msg->userTo;
-        $message->text = $msg->message;
+        $dialog = new Dialog();
+        $dialog->from = $from->userId;
+        $dialog->to = $msg->userTo;
+        if ($dialog->validate()) {
+            if (($existedDialog = Dialog::byUsers($dialog->from, $dialog->to)->first()) === null) {
+                $dialog->save();
+                $existedDialog = $dialog;
+            }
+            $message = new Message();
+            $message->from = $from->userId;
+            $message->dialog_id = $existedDialog->id;
+            $message->text = $msg->message;
 
-        if ($message->validate()) {
-            $message->save();
-            foreach ($this->clients as $client) {
-                if (($client->userId == $from->userId) || ($client->userId == $msg->userTo)) {
-                    $client->send(view('chat._message', ['messages' => [$message]]));
+            if ($message->validate()) {
+                $message->save();
+                foreach ($this->clients as $client) {
+                    if (($client->userId == $from->userId) || ($client->userId == $msg->userTo)) {
+                        $client->send(view('chat._message', ['messages' => [$message]]));
+                    }
                 }
             }
         }
-
     }
 
     public function onClose(ConnectionInterface $conn)

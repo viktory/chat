@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Message extends Model
+class Dialog extends Model
 {
-    protected $table = 'messages';
+    protected $table = 'dialogs';
 
     /**
      * Get the validation rules
@@ -17,8 +17,7 @@ class Message extends Model
     {
         return [
             'from' => 'required|exists:users,id',
-            'dialog_id' => 'required|exists:dialogs,id',
-            'text' => 'required',
+            'to' => 'required|exists:users,id|different:from',
         ];
     }
 
@@ -32,25 +31,21 @@ class Message extends Model
         return $validator->passes();
     }
 
-
     /**
      * @param $query
-     * @param $dialogId
+     * @param $from
+     * @param $to
      *
      * @return mixed
      */
-    public function scopeByDialog($query, $dialogId)
+    public function scopeByUsers($query, $from, $to)
     {
-        return $query->where('dialog_id', $dialogId);
-    }
-
-    public function sender()
-    {
-        return $this->hasOne(User::class, 'id', 'from');
-    }
-
-    public function dialog()
-    {
-        return $this->belongsTo(Dialog::class, 'dialog_id');
+        return $query->where(function ($tmpQuery) use ($from, $to) {
+            $tmpQuery->where('from', $from)
+                ->where('to', $to);
+        })->orWhere(function ($tmpQuery) use ($from, $to) {
+            $tmpQuery->where('from', $to)
+                ->where('to', $from);
+        });
     }
 }
