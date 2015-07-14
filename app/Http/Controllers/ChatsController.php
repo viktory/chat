@@ -32,25 +32,33 @@ class ChatsController extends Controller
         $currentUser = $this->auth->user();
         $users = User::exceptUser($currentUser->id)->exceptAdmins()->orderBy('username', 'asc')->get();
 
-        return view('chat.index', ['currentUser' => $currentUser, 'users' => $users]);
+        return view('chat.index', ['currentUser' => $currentUser, 'users' => $users, 'createActionName' => Message::CREATE_ACTION_NAME]);
     }
 
     public function admin()
     {
         $currentUser = $this->auth->user();
-//        $users = User::exceptUser($currentUser->id)->exceptAdmins()->get();
+        $dialogs = Dialog::all();
 
-//        return view('chat.admin', ['currentUser' => $currentUser, 'users' => $users]);
+        return view('chat.admin', ['currentUser' => $currentUser, 'dialogs' => $dialogs, 'deleteActionName' => Message::DELETE_ACTION_NAME]);
     }
 
-    public function loadHistory($id)
+    public function loadHistory($from, $to = null)
     {
         $currentUser = $this->auth->user();
-        if (($dialog = Dialog::byUsers($id, $currentUser->id)->first()) === null) {
+        if ($currentUser->is_admin) {
+            if ($to === null) {
+                abort(404);
+            }
+        } else {
+            $to = $currentUser->id;
+        }
+
+        if (($dialog = Dialog::byUsers($from, $to)->first()) === null) {
             $messages = [];
         } else {
             $messages = Message::byDialog($dialog->id)->orderBy('created_at', 'asc')->get();
         }
-        return view('chat._message', ['messages' => $messages]);
+        return view('chat._message', ['messages' => $messages, 'isAdmin' => $currentUser->is_admin]);
     }
 }

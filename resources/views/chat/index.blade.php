@@ -28,7 +28,8 @@
         $(document).ready(function(){
             $("#message").chat({
                 uri: "<?= str_replace(['http://', 'https://'], '', \Illuminate\Support\Facades\URL::to('/'))?>",
-                currentUserId: {{ $currentUser->id }}
+                currentUserId: {{ $currentUser->id }},
+                createActionName: "{{ $createActionName }}"
             })
         });
     </script>

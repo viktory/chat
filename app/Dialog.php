@@ -48,4 +48,14 @@ class Dialog extends Model
                 ->where('to', $from);
         });
     }
+
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'from');
+    }
+
+    public function addressee()
+    {
+        return $this->belongsTo(User::class, 'to');
+    }
 }

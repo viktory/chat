@@ -57,6 +57,8 @@ class UsersController extends Controller
      *      2. email is correct and username is empty
      *      3. username is correct and email is correct
      *
+     * Sing in is case sensitive
+     *
      * @param Requests\LoginFormRequest $request
      *
      * @return $this

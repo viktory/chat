@@ -43,6 +43,10 @@ body {
 
           .date {
             float: right;
+            .glyphicon-remove {
+              color: #a94442;
+              cursor: pointer;
+            }
           }
         }
       }

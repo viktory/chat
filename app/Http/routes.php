@@ -22,6 +22,8 @@ Route::get('logout',
     ['as' => 'logout', 'uses' => 'UsersController@logout']);
 Route::get('chat',
     ['as' => 'chat', 'uses' => 'ChatsController@index']);
-Route::get('load_history/{id}',
-    ['as' => 'load_history', 'uses' => 'ChatsController@loadHistory'])
-    ->where('id', '[0-9]+');
+Route::get('admin',
+    ['as' => 'admin', 'uses' => 'ChatsController@admin']);
+Route::get('load-history/{from}/{to?}',
+    ['as' => 'load-history', 'uses' => 'ChatsController@loadHistory'])
+    ->where(['from' => '[0-9]+', 'to' => '[0-9]+']);

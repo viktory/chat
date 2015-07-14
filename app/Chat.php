@@ -40,36 +40,22 @@ class Chat implements MessageComponentInterface
         $session->setId($idSession);
         $session->start();
         $userId = $session->get(Auth::getName());
+        $user = User::find($userId);
 
         $conn->userId = $userId;
+        $conn->isAdmin = $user->is_admin === true;
         echo "New connection! ({$conn->resourceId}), $userId\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
-        $msg = json_decode($msg);
+        $msg = json_decode($msg);var_dump($msg->id);
+        if (isset($msg->action)) {
+            if ($msg->action == Message::CREATE_ACTION_NAME) {
+                $this->createMessage($from, $msg);
+            } elseif (isset($msg->id) && ($msg->action == Message::DELETE_ACTION_NAME)) {
 
-        echo sprintf('User %d sending message "%s" to user %d' . "\n"
-            , $from->userId, $msg->message, $msg->userTo);
-
-        $dialog = new Dialog();
-        $dialog->from = $from->userId;
-        $dialog->to = $msg->userTo;
-        if ($dialog->validate()) {
-            if (($existedDialog = Dialog::byUsers($dialog->from, $dialog->to)->first()) === null) {
-                $dialog->save();
-                $existedDialog = $dialog;
-            }
-            $message = new Message();
-            $message->from = $from->userId;
-            $message->dialog_id = $existedDialog->id;
-            $message->text = $msg->message;
-
-            if ($message->validate()) {
-                $message->save();
-                foreach ($this->clients as $client) {
-                    if (($client->userId == $from->userId) || ($client->userId == $msg->userTo)) {
-                        $client->send(view('chat._message', ['messages' => [$message]]));
-                    }
+                if (($message = Message::find($msg->id)) !== null) {
+                    $this->deleteMessage($message);
                 }
             }
         }
@@ -88,5 +74,50 @@ class Chat implements MessageComponentInterface
         echo "An error has occurred: {$e->getMessage()}\n";
 
         $conn->close();
+    }
+
+    protected function createMessage($from, $msg)
+    {
+        echo sprintf('User %d sending message "%s" to user %d' . "\n"
+            , $from->userId, $msg->message, $msg->userTo);
+
+        $dialog = new Dialog();
+        $dialog->from = $from->userId;
+        $dialog->to = $msg->userTo;
+        if ($dialog->validate()) {
+            if (($existedDialog = Dialog::byUsers($dialog->from, $dialog->to)->first()) === null) {
+                $dialog->save();
+                $existedDialog = $dialog;
+            }
+            $message = new Message();
+            $message->from = $from->userId;
+            $message->dialog_id = $existedDialog->id;
+            $message->text = $msg->message;
+
+            if ($message->validate()) {
+                $message->save();
+
+                foreach ($this->clients as $client) {
+                    if (($client->userId == $from->userId) || ($client->userId == $msg->userTo) || ($client->isAdmin === true)) {
+                        $msg = ['action' => Message::CREATE_ACTION_NAME, 'html' => view('chat._message', ['messages' => [$message], 'isAdmin' => $client->isAdmin])];
+                        $client->send(json_encode($msg));
+                    }
+                }
+            }
+        }
+    }
+
+    protected function deleteMessage($message)
+    {
+        echo sprintf('Admin deleting message with id %d ' . "\n"
+            , $message->id);
+        $dialog = $message->dialog;
+        $message->delete();
+        $msg = ['action' => Message::DELETE_ACTION_NAME, 'id' => $message->id];
+        foreach ($this->clients as $client) {
+            if (($client->userId == $dialog->from) || ($client->userId == $dialog->to) || ($client->isAdmin === true)) {
+                $client->send(json_encode($msg));
+            }
+        }
     }
 }

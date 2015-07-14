@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
+    const DELETE_ACTION_NAME = 'delete';
+    const CREATE_ACTION_NAME = 'create';
+
     protected $table = 'messages';
 
     /**
@@ -46,7 +49,7 @@ class Message extends Model
 
     public function sender()
     {
-        return $this->hasOne(User::class, 'id', 'from');
+        return $this->belongsTo(User::class, 'from');
     }
 
     public function dialog()
