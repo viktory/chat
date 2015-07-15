@@ -13,8 +13,7 @@ Instalation
 ```php artisan migrate;php artisan db:seed```
 6. Install gulp and Elixir. Be sure that node.js is installed
 ```npm install gulp;npm install```
-7. Run gulp
-```gulp```
+7. Run gulp ```gulp```
 8. Run WebSocket Server
 ```php artisan wschat:start```
 9. Enjoy :)
