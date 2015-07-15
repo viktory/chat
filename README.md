@@ -12,7 +12,8 @@ Instalation
 5. Run migrations and seeds
 ```
 php artisan migrate;
-php artisan db:seed```
+php artisan db:seed
+```
 6. Install gulp and Elixir. Be sure that node.js is installed
 ```
 npm install gulp;
