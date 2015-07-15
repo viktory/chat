@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
-class RedirectIfAuthenticated
+class ForbiddenIfNotAdmin
 {
     /**
      * The Guard implementation.
@@ -35,7 +35,11 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next)
     {
         if ($this->auth->check()) {
-            return redirect('/chat');
+            $currentUser = $this->auth->user();
+            if (!$currentUser->is_admin) {
+                abort(403, 'Forbidden.');
+            }
+
         }
 
         return $next($request);

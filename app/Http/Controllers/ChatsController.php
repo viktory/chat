@@ -24,7 +24,9 @@ class ChatsController extends Controller
     {
         $this->auth = $auth;
 
-//        $this->middleware('guest', ['except' => 'logout']);
+        $this->middleware('auth');
+        $this->middleware('admin', ['only' => 'admin']);
+        $this->middleware('notAdmin', ['only' => 'index']);
     }
 
     public function index()

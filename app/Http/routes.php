@@ -11,19 +11,23 @@
 |
 */
 
-Route::get('/', function () {
-    return view('index');
+Route::group(['middleware' => 'guest'], function()
+{
+    Route::get('/', function () {
+        return view('index');
+    });
 });
+
+Route::get('chat',
+    ['as' => 'chat', 'uses' => 'ChatsController@index']);
+Route::get('admin',
+    ['as' => 'admin', 'uses' => 'ChatsController@admin']);
 Route::post('registration',
     ['as' => 'registration', 'uses' => 'UsersController@registration']);
 Route::post('login',
     ['as' => 'login', 'uses' => 'UsersController@login']);
 Route::get('logout',
     ['as' => 'logout', 'uses' => 'UsersController@logout']);
-Route::get('chat',
-    ['as' => 'chat', 'uses' => 'ChatsController@index']);
-Route::get('admin',
-    ['as' => 'admin', 'uses' => 'ChatsController@admin']);
 Route::get('load-history/{from}/{to?}',
     ['as' => 'load-history', 'uses' => 'ChatsController@loadHistory'])
     ->where(['from' => '[0-9]+', 'to' => '[0-9]+']);

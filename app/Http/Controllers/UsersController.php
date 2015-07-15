@@ -27,8 +27,7 @@ class UsersController extends Controller
     public function __construct(Guard $auth)
     {
         $this->auth = $auth;
-
-//        $this->middleware('guest', ['except' => 'logout']);
+        $this->middleware('guest', ['except' => 'logout']);
     }
 
     /**

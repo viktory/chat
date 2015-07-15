@@ -1,4 +1,4 @@
-<div class="col-lg-6">
+<div class="col-lg-5 well">
     <p>{{ $text }}</p>
     @foreach($errors->$errorBag->all() as $error)
         <p class="bg-danger">{{ $error }}</p>
