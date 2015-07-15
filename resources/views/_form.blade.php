@@ -1,14 +1,3 @@
-@if ($type == 'login')
-    <?php $text = 'Sign in';
-    $errorBag = $route = 'login';
-    $inputOptions = ['class'=>'form-control'];?>
-@else
-    <?php $text = 'Sign up';
-    $errorBag = $route = 'registration';
-    $inputOptions = ['required', 'class'=>'form-control'];?>
-@endif
-
-
 <div class="col-lg-6">
     <p>{{ $text }}</p>
     @foreach($errors->$errorBag->all() as $error)
