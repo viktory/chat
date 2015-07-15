@@ -10,7 +10,8 @@
         'currentUserId': null,
         'isAdmin': false,
         'deleteActionName': 'delete',
-        'createActionName': 'create'
+        'createActionName': 'create',
+        'scrollSpeed': 500
     };
 
     $.fn.chat = function(options) {
@@ -33,7 +34,9 @@
                 if (data.action == opts.createActionName) {
                     addMessage(data);
                 } else if (data.action == opts.deleteActionName) {
-                    $('#chatMessages').find('.message-block[data-id="' + data.id + '"]').remove();
+                    $('#chatMessages').find('.message-block[data-id="' + data.id + '"]').slideUp(function() {
+                        $(this).remove();
+                    });
                 }
             }
         };
@@ -52,7 +55,7 @@
             var html = data.html;
             var userIds = [$(html).data('to'), $(html).data('from')];
             if ((userIds.indexOf(from) >= 0) && (userIds.indexOf(to) >= 0)) {
-                addMessageToChatBox(html);
+                addMessageToChatBox(html, opts.scrollSpeed);
             } else {
                 var counterBlock;
                 if (opts.isAdmin) {
@@ -69,11 +72,15 @@
         }
 
         conn.onclose = function (event) {
-            addMessageToChatBox("<br>Connection closed. Please, reload the page");
+            addMessageToChatBox('<div class="alert alert-warning">Connection closed. Please, reload the page</div>');
         };
 
-        var addMessageToChatBox = function (message) {
+        var addMessageToChatBox = function (message, scrollSpeed) {
+            scrollSpeed = scrollSpeed || 0;
             $("#chatMessages").append(message);
+            $('#chatMessages').animate({
+                scrollTop: $('#chatMessages')[0].scrollHeight
+            }, scrollSpeed);
         }
 
         var send = function() {
@@ -89,11 +96,12 @@
             $(this).addClass('active');
             $.get($(this).attr('href'))
                 .done(function( data ) {
-                    $("#chatMessages").html(data);
+                    $("#chatMessages").html('');
+                    addMessageToChatBox(data);
                     $('.user-block').find('.list-group-item.active').find('.counter').text('');
-                    $('#message').removeAttr('disabled');
-                    $('#send-btn').removeAttr('disabled');
-                    $(self).val("")
+                    $('#message').prop('disabled', false);
+                    $('#send-btn').prop('disabled', false);
+                    $(self).val("");
                 });
             return false;
         });

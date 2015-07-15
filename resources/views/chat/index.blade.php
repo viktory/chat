@@ -27,6 +27,10 @@
     <script>
         $(document).ready(function(){
             $("#message").chat({
+                /**
+                 * url must be without schema. So we have to remove http://' and 'https://' here or in javascript.
+                 * It looks like removing in the template is much better
+                 */
                 uri: "<?= str_replace(['http://', 'https://'], '', \Illuminate\Support\Facades\URL::to('/'))?>",
                 currentUserId: {{ $currentUser->id }},
                 createActionName: "{{ $createActionName }}"

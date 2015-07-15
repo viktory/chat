@@ -7,6 +7,10 @@ body {
     padding-top: 40px;
     color: #555555;
 
+    h1 {
+      margin: 0 0 30px;
+    }
+
     .bg-danger {
       padding: 10px;
       border-radius: 5px;
@@ -23,20 +27,16 @@ body {
       margin-bottom: 20px;
 
       #chatMessages {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
         padding: 10px 15px;
-        right: -15px;
+        height: 500px;
         overflow: auto;
-        width: 100%;
 
         .message-block {
           margin-bottom: 10px;
           padding: 10px;
           border-radius: 5px;
           background: #f8f8ff;
-
+          word-wrap: break-word;
 
           .header div {
             display: inline-block;
