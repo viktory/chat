@@ -48,7 +48,7 @@ class Chat implements MessageComponentInterface
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
-        $msg = json_decode($msg);var_dump($msg->id);
+        $msg = json_decode($msg);
         if (isset($msg->action)) {
             if ($msg->action == Message::CREATE_ACTION_NAME) {
                 $this->createMessage($from, $msg);
@@ -99,8 +99,9 @@ class Chat implements MessageComponentInterface
 
                 foreach ($this->clients as $client) {
                     if (($client->userId == $from->userId) || ($client->userId == $msg->userTo) || ($client->isAdmin === true)) {
-                        $msg = ['action' => Message::CREATE_ACTION_NAME, 'html' => view('chat._message', ['messages' => [$message], 'isAdmin' => $client->isAdmin])];
-                        $client->send(json_encode($msg));
+                        $view = view('chat._message', ['messages' => [$message], 'isAdmin' => $client->isAdmin]);
+                        $sendData = ['action' => Message::CREATE_ACTION_NAME, 'html' => $view->render()];
+                        $client->send(json_encode($sendData));
                     }
                 }
             }

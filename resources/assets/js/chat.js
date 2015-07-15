@@ -28,6 +28,18 @@
         };
 
         conn.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            if (!!data.action) {
+                if (data.action == opts.createActionName) {
+                    addMessage(data);
+                } else if (data.action == opts.deleteActionName) {
+                    $('#chatMessages').find('.message-block[data-id="' + data.id + '"]').remove();
+                }
+            }
+        };
+
+        var addMessage = function(data)
+        {
             var from, to;
             var activeUserItem = $('.user-block').find('.list-group-item.active');
             if (opts.isAdmin) {
@@ -37,33 +49,24 @@
                 from = opts.currentUserId;
                 to = activeUserItem.data('id');
             }
-            var data = JSON.parse(e.data);
-            if (!!data.action) {
-                if (data.action == opts.createActionName) {
-                    var html = data.html;
-                    var userIds = [$(html).data('to'), $(html).data('from')];
-                    if ((userIds.indexOf(from) >= 0) && (userIds.indexOf(to) >= 0)) {
-                        addMessageToChatBox(html);
-                    } else {
-                        var counterBlock;
-                        if (opts.isAdmin) {
-                            counterBlock = $('.user-block').find('.list-group-item[data-from="' + $(html).data('from') + '"][data-to="' + $(html).data('to') + '"]').find('.counter');
-                            if (counterBlock.length == 0) {
-                                counterBlock = $('.user-block').find('.list-group-item[data-to="' + $(html).data('from') + '"][data-from="' + $(html).data('to') + '"]').find('.counter');
-                            }
-                        } else {
-                            counterBlock = $('.user-block').find('.list-group-item[data-id="' + $(html).data('from') + '"]').find('.counter');
-                        }
-                        var counter = counterBlock.text();
-                        counterBlock.text(++counter);
+            var html = data.html;
+            var userIds = [$(html).data('to'), $(html).data('from')];
+            if ((userIds.indexOf(from) >= 0) && (userIds.indexOf(to) >= 0)) {
+                addMessageToChatBox(html);
+            } else {
+                var counterBlock;
+                if (opts.isAdmin) {
+                    counterBlock = $('.user-block').find('.list-group-item[data-from="' + $(html).data('from') + '"][data-to="' + $(html).data('to') + '"]').find('.counter');
+                    if (counterBlock.length == 0) {
+                        counterBlock = $('.user-block').find('.list-group-item[data-to="' + $(html).data('from') + '"][data-from="' + $(html).data('to') + '"]').find('.counter');
                     }
-                } else if (data.action == opts.deleteActionName) {
-                    $('#chatMessages').find('.message-block[data-id="' + data.id + '"]').remove();
+                } else {
+                    counterBlock = $('.user-block').find('.list-group-item[data-id="' + $(html).data('from') + '"]').find('.counter');
                 }
+                var counter = counterBlock.text();
+                counterBlock.text(++counter);
             }
-
-
-        };
+        }
 
         conn.onclose = function (event) {
             addMessageToChatBox("<br>Connection closed. Please, reload the page");
