@@ -45,7 +45,7 @@ class ChatsController extends Controller
         return view('chat.admin', ['currentUser' => $currentUser, 'dialogs' => $dialogs, 'deleteActionName' => Message::DELETE_ACTION_NAME]);
     }
 
-    public function loadHistory($from, $to = null)
+    public function loadHistory(Request $request, $from, $to = null)
     {
         $currentUser = $this->auth->user();
         if ($currentUser->is_admin) {
@@ -61,6 +61,13 @@ class ChatsController extends Controller
         } else {
             $messages = Message::byDialog($dialog->id)->orderBy('created_at', 'asc')->get();
         }
-        return view('chat._message', ['messages' => $messages, 'isAdmin' => $currentUser->is_admin]);
+        $data = ['messages' => $messages, 'isAdmin' => $currentUser->is_admin];
+        if ($request->ajax()) {
+           $viewName = 'chat._message';
+        } else {
+            $viewName = 'chat.history';
+            $data['currentUser'] = $currentUser;
+        }
+        return view($viewName, $data);
     }
 }
